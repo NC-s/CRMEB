@@ -112,6 +112,17 @@ class PayMePay extends BasePay implements PayInterface
 }
 ```
 
+**结合 WooCommerce PayMe 示例进行落地（参考外部代码）**：
+
+如果你准备参考 `https://github.com/vanbess/PLUGIN-WooCommerce-PayMe-Payment-Gateway/blob/master/classes/SBPayMe.php`，建议在对照时重点关注并迁移以下职责到本项目的服务层与支付驱动中：
+
+* **参数组装与签名逻辑**：将请求字段的拼装、哈希/签名逻辑迁移到 `PayMeService` 或驱动的 `create()` 内部，避免散落在控制器层。
+* **下单与收银台跳转**：识别其“创建订单/生成支付链接”的入口，映射为 `PayMePay::create()` 返回跳转 URL 或二维码链接。
+* **回调/通知处理**：对照其回调处理函数，将验签、状态校验与订单号匹配逻辑迁移到 `PayMePay::handleNotify()`。
+* **退款**：若示例包含退款请求或接口封装，将其逻辑迁移到 `PayMePay::refund()` 并保持与 `PayInterface` 一致。
+
+> 备注：该文件不在本仓库内，请以实际 PayMe API 文档为准，示例仅用于结构对照与职责划分。
+
 #### C. AlipayHK（香港支付宝）
 
 **建议路径**：AlipayHK 在 API 设计上与 Alipay 内地版相似，但通常有不同的网关、应用 ID 与签名证书配置。
